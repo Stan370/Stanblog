@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="StanBlog">
-    <meta name="description" content="StanBlog">
+    <meta name="keywords" content="I/O 多路复用，select / poll / epoll 详解, StanBlog">
+    <meta name="description" content="在现代计算机系统中，I&amp;#x2F;O 操作是影响性能的关键因素，尤其是在网络服务和本地存储密集型应用中。你是否曾经思考过网络 I&amp;#x2F;O 和本地 I&amp;#x2F;O 之间的性能差异？为什么网络传输总是比本地硬盘慢？在现代高性能网络编程中">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -16,21 +16,33 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
 
-    <title>StanBlog</title>
-    <link rel="icon" type="image/png" href="/favicon.png">
+    gtag('js', new Date());
+    gtag('config', '');
+</script>
 
-    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
-    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
-    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
-    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
-    <link rel="stylesheet" type="text/css" href="/css/matery.css">
-    <link rel="stylesheet" type="text/css" href="/css/my.css">
 
-    <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
+    <title>I/O 多路复用，select / poll / epoll 详解 | StanBlog</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/favicon.png">
 
-<meta name="generator" content="Hexo 6.1.0"></head>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/awesome/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="StanBlog" type="application/atom+xml">
+</head>
 
 
 
@@ -42,7 +54,7 @@
             <div class="brand-logo">
                 <a href="/" class="waves-effect waves-light">
                     
-                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/logo.png" class="logo-img" alt="LOGO">
                     
                     <span class="logo-span">StanBlog</span>
                 </a>
@@ -118,17 +130,6 @@
     
   </li>
   
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/friends" class="waves-effect waves-light">
-      
-      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
-      
-      <span>Friends</span>
-    </a>
-    
-  </li>
-  
   <li>
     <a href="#searchModal" class="modal-trigger waves-effect waves-light">
       <i id="searchIcon" class="fas fa-search" title="Search" style="zoom: 0.85;"></i>
@@ -141,7 +142,7 @@
 
     <div class="mobile-head bg-color">
         
-        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/logo.png" class="logo-img circle responsive-img">
         
         <div class="logo-name">StanBlog</div>
         <div class="logo-desc">
@@ -219,21 +220,10 @@
           
         </li>
         
-        <li class="m-nav-item">
-	  
-		<a href="/friends" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-address-book"></i>
-			
-			Friends
-		</a>
-          
-        </li>
-        
         
         <li><div class="divider"></div></li>
         <li>
-            <a href="https://github.com/Stan370" class="waves-effect waves-light" target="_blank">
+            <a href="https://github.com/Stan370/stan370.github.io" class="waves-effect waves-light" target="_blank">
                 <i class="fab fa-github-square fa-fw"></i>Fork Me
             </a>
         </li>
@@ -290,7 +280,7 @@
     }
 </style>
 
-<a href="https://github.com/Stan370" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+<a href="https://github.com/Stan370/stan370.github.io" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
    data-tooltip="Fork Me" data-position="left" data-delay="50">
     <svg viewBox="0 0 250 250" aria-hidden="true">
         <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
@@ -309,12 +299,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/featureimages/5.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title"></h1>
+                    <h1 class="description center-align post-title">I/O 多路复用，select / poll / epoll 详解</h1>
                 </div>
             </div>
         </div>
@@ -327,7 +317,7 @@
 <main class="post-container content">
 
     
-    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/tocbot/tocbot.css">
 <style>
     #articleContent h1::before,
     #articleContent h2::before,
@@ -428,12 +418,29 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">No tag</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">
+                                <span class="chip bg-color">计算机基础</span>
+                            </a>
+                        
+                            <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">
+                                <span class="chip bg-color">操作系统</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" class="post-category">
+                                计算机科学
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -442,14 +449,24 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
-                    2023-12-13
+                    2024-09-15
                 </div>
                 
 
                 
 
                 
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>Word Count:&nbsp;&nbsp;
+                    2.8k
+                </div>
+                
 
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>Read Times:&nbsp;&nbsp;
+                    10 Min
+                </div>
                 
 
                 
@@ -463,82 +480,76 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="CrawlFund总结报告"><a href="#CrawlFund总结报告" class="headerlink" title="CrawlFund总结报告"></a>CrawlFund总结报告</h1><p>本项目可爬取天天基金网上的所有基金，辅助对基金投资的选择，包括基金代码,基金名称,单位净值,累计净值, 日增长率,   近1周,  近1月,  近3月,  近6月,  近1年,  近2年,  近3年,  今年来,  成立来的收益率等信息；实现了单个基金成立以来历史波动数据的爬取和基于echart的数据可视化，方便复盘投资决策；实现了多线程爬取二级网页的经理信息并写入csv</p>
-<h2 id="寻找思路"><a href="#寻找思路" class="headerlink" title="寻找思路"></a>寻找思路</h2><h3 id="1-分析网站"><a href="#1-分析网站" class="headerlink" title="1.分析网站"></a>1.分析网站</h3><p>1.首先来到[天天基金——基金排行](<a target="_blank" rel="noopener" href="http://fund.eastmoney.com/jzzzl.html">http://fund.eastmoney.com/ fundranking.html</a>) ，分析要爬取的内容<img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image002.png" alt="图形用户界面, 应用程序  描述已自动生成"></p>
-<p>通过基金简称中的超链接，我们可以跳转到某个基金的首页，观察到页面的网址由首页地址加上基金代码组成。在详情页我们可以得到基金规模、基金经理、历史单位净值等信息。<img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image004.png" alt="图形用户界面, 应用程序  描述已自动生成"></p>
-<p>通过对比定位发现，实时的排行数据根据客户端渲染生成，fundranking.html中的<div class="space6">下的<table id="dbtable" >分割了每一行的数据，在排行首页我们要想办法获取到50个基金（当前页面）的<strong>基金代码，历史收益率和单位净值等信息。</strong></p>
-<h3 id="2-抓包分析"><a href="#2-抓包分析" class="headerlink" title="2.抓包分析"></a>2.抓包分析</h3><p><img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image006.png" alt="图形用户界面, 文本, 应用程序  描述已自动生成"></p>
-<p>在这里历史信息不在这个包中，应该在其他的包里，于是点击下一页，重新进行抓包。发现每次点击下一页时，都会发一个这个包<br> 对这个包进行分析，发现响应是ASP格式（和之前的html不同），并且我们要的历史数据也在这里面。</p>
-<p><img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image008.png" alt="图形用户界面, 应用程序  描述已自动生成"></p>
-<p><img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image010.png" alt="图形用户界面, 文本  描述已自动生成"></p>
-<p>2.在F12-Network的response中我们发现到带有上述信息的数据包封装在ASP函数中，我们将Request URL中的地址复制下来，开启一个新页面进行访问，发现响应的内容如下，aspx格式，但是很明显，内容并不是我们想要的，猜想应该是页面对这个请求地址做了反扒。<img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image012.png" alt="img"></p>
-<p>经过几次尝试，发现这个Request URL中的地址并不能直接访问，需要对请求投做特殊处理，也就是在发起对这个URL的请求时，请求头中要告诉浏览器，它是从那个网址跳转过来的，也就是不能直接访问这个URL，需要重借助另一个网址进行跳转，不然服务器会识别为爬虫行为，然后返回错误的数据。这个中间网址一般为Headers中的Referer,如下图所示。</p>
-<p><img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image014.png" alt="文本  描述已自动生成"></p>
-<p>所以在之后的代码编写环节要注意对headers的处理。 </p>
-<p>Request URL: [<a target="_blank" rel="noopener" href="http://fund.eastmoney.com/data/rankhandler.aspx?op=ph&amp;dt=kf&amp;ft=all&amp;rs=&amp;gs=0&amp;sc=6yzf&amp;st=desc&amp;sd=2021-04-11&amp;ed=2022-04-11&amp;qdii=&amp;tabSubtype=,,,,,&amp;pi=1&amp;pn=50&amp;dx=1&amp;v=0.12011115027658459%5D">http://fund.eastmoney.com/data/rankhandler.aspx?op=ph&amp;dt=kf&amp;ft=all&amp;rs=&amp;gs=0&amp;sc=6yzf&amp;st=desc&amp;sd=2021-04-11&amp;ed=2022-04-11&amp;qdii=&amp;tabSubtype=,,,,,&amp;pi=1&amp;pn=50&amp;dx=1&amp;v=0.12011115027658459]</a>(Request URL: http:&#x2F;fund.eastmoney.com&#x2F;data&#x2F;rankhandler.aspx?op&#x3D;ph&amp;dt&#x3D;kf&amp;ft&#x3D;all&amp;rs&#x3D;&amp;gs&#x3D;0&amp;sc&#x3D;6yzf&amp;st&#x3D;desc&amp;sd&#x3D;2021-04-11&amp;ed&#x3D;2022-04-11&amp;qdii&#x3D;&amp;tabSubtype&#x3D;,,,,,&amp;pi&#x3D;1&amp;pn&#x3D;50&amp;dx&#x3D;1&amp;v&#x3D;0.12011115027658459)后面的字符串很容易看出来和排序方式、升降序、时间有关，把他去掉也不影响最后的响应内容。</p>
-<p>最后剩下的就好判断了，一个是基金代码，一个是当前页面，还有一个是每页显示的数据量，有了这些在进行翻页就简单多了。</p>
-<p>不过通过每次改变pageIndex进行翻页，我感觉有些麻烦，所以就尝试改变pageSize来在一个页面中获取所有的数据，没想到还真的可以，这样就可以指定pageSize的大小来获取数据，而不用翻页多次发请求，方便了许多。</p>
-<p>\3. </p>
-<h2 id="代码编写"><a href="#代码编写" class="headerlink" title="代码编写"></a>代码编写</h2><p><img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image016.png" alt="电脑萤幕的截图  描述已自动生成">第一次伪装headers测试后发现 如果request URL请求带的参数错误天天基金会给你返回空白的 200结果。所以我们需要搞清楚Query String parameters的含义<img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image018.png" alt="文本  低可信度描述已自动生成"></p>
-<p>通过不断的调包抓包发现，ft表示基金类型（股票、混合、QDII）；sc表示排序方式，可根据不同时间周期的收益or净值排序；st表示升降序选择；sd、ed表示自定义时间周期（默认一年）；pi:x 表示当前排序下从第x个基金开始，<strong>pn表示response将发送的基金数量</strong>。</p>
-<p><img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image020.png" alt="文本  描述已自动生成"></p>
-<p>第一阶段 我们的任务是抓取3000条基金的基本信息（近6月收益率降序排序）并将数据保存在csv文件中。</p>
-<p>编写class GetPage 来处理请求和获取数据 接着class Processdata 来进一步储存数据</p>
-<p><img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image022.png" alt="文本  描述已自动生成"></p>
-<p>在解析完带参请求后把数据保存，可以将数据保存在数据库中持久化</p>
-<p><img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image024.png" alt="文本  描述已自动生成"></p>
-<p>第二阶段，我们想要实现爬取单个基金的历史净值数据</p>
-<p>首先打开<a target="_blank" rel="noopener" href="https://fundf10.eastmoney.com/jjjz_162719.html%EF%BC%8C%E8%BF%9B%E8%A1%8C%E7%BF%BB%E9%A1%B5%E6%93%8D%E4%BD%9C%EF%BC%8C%E6%9F%A5%E7%9C%8B%E5%90%8E%E5%8F%B0%E8%AF%B7%E6%B1%82Preview">https://fundf10.eastmoney.com/jjjz_162719.html，进行翻页操作，查看后台请求Preview</a></p>
-<p><img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image026.png" alt="图形用户界面, 应用程序  描述已自动生成"></p>
-<p>分析完请求参数后根据同样的方法构造请求<img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image028.png" alt="文本  描述已自动生成"></p>
-<p>这部分代码的主要难点是对每一天数据的处理分割和分页获取操作</p>
-<p>对数据解析：  <img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image030.png" alt="文本  描述已自动生成"></p>
-<p>在terminal的信息展示<img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image032.png" alt="文本  描述已自动生成"></p>
-<p>使用yield generator 把每一页的数据添加到对象的属性中，实现数据的持久化，方便迭代器输出<img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image034.png" alt="文本  描述已自动生成"></p>
-<p>最后生成的csv文件包含自成立以来的净值信息（若乱码 注意文件打开的编码格式根据操作系统设置，UTF-8 or GBK）<img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image036.png" alt="文本  描述已自动生成"></p>
-<p>第三阶段，实现基金收益可视化</p>
-<p>计划实现收益折线图和当日收益柱形图两种形式</p>
-<p>\1.    导入pandas包处理csv数据，通过改变min_date可以实现统计已往任意时刻投入10000本金到现在的收益明细</p>
-<p><img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image038.png" alt="文本  描述已自动生成"></p>
-<p>导入pyecharts 实现可视化</p>
-<p>pyecharts是一款将echarts封装到python中的一款开源框架，它提供了一个叫setOptions的方法，通过这个方法我们传入一个options就可以生成一个图表了，我们只需维护options变量。通过编辑Bar,Line,Grid对象,我们可以绘制柱形图，折线图和页面的布局<img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image040.png" alt="文本  描述已自动生成"></p>
-<p>柱形图源代码<img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image042.png" alt="文本  描述已自动生成"></p>
-<p>目录下生成的HTML： <img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image044.png" alt="文本  描述已自动生成"></p>
-<p>示例：生成的162719.html效果图</p>
-<p><img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image046.png" alt="图片包含 工具, 铅笔  描述已自动生成"></p>
-<p>&#x2F;&#x2F;也可导入snapshot_selenium包，输出png格式<img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image048.png" alt="img"></p>
-<p>第四阶段，为了爬取每个基金的详细信息，并发访问大量的URL，我们需要选择一种最适合该任务的编写方式。</p>
-<p>有两个因素能够影响一个并发应用程序的性能：上下文切换和可扩展性。上下文切换在所有运行的任务间公平地共享 CPU 所需的工作，称为上下文切换，能够影响应用程序的性能。对同步应用程序来说，这项工作是由操作系统完成的，而且基本上是一个黑箱，不需要配置或微调选项。对异步应用程序来说，上下文切换是由循环完成的。默认的循环实现由asyncio提供，是用 Python 编写的，效率不是很高。</p>
-<p>在以下场景时，我们可以说异步可能比同步快：存在高负载（没有高负载，访问的高并发性就没有优势）任务是 I&#x2F;O 绑定的（如果任务是 CPU 绑定的，那么超过 CPU 数目的并发并没有帮助）你查看单位时间内的平均请求处理数。如果你查看单个请求的处理时间，甚至异步可能更慢，因为异步有更多并发的任务在争夺 CPU。</p>
-<p>对于爬取3000+数据并将其写入文件的IO密集型任务，异步开发无疑是效率更高。</p>
-<p>对于异步爬虫又有以下3种实现方式</p>
-<p>1.多线程，多进程</p>
-<p>好处：可以为相关的阻塞操作单独开辟线程或者进程，阻塞操作就可以异步执行</p>
-<p>弊端：无法无限制的开启多线程或者多进程(如果不限制的开启了，会严重消耗CPU资源，这样会导致响应外界效率变慢)</p>
-<p>2.线程池</p>
-<p>好处：可以降低系统对进程或者线程创建和销毁的一个频率，从而降低系统的开销</p>
-<p>弊端：线程池或者进程池使用有上限</p>
-<p>3.单线程+异步协程</p>
-<p>最大的优势就是协程极高的执行效率。因为子程序切换不是线程切换，而是由程序自身控制，因此，没有线程切换的开销，和多线程比，线程数量越多，协程的性能优势就越明显。</p>
-<p>第二大优势就是不需要多线程的锁机制，因为只有一个线程，也不存在同时写变量冲突，在协程中控制共享资源不加锁，只需要判断状态就好了，所以执行效率比多线程高很多。因为协程是一个线程执行，那怎么利用多核CPU呢？最简单的方法是多进程+协程，既充分利用多核，又充分发挥协程的高效率，可获得极高的性能。</p>
-<p>Version.1 线程池+同步锁</p>
-<p>启动另一个进程，并在这个进程中使用多线程（线程池）来爬取网页，线程的任务调度交给线程池处理。线程池的大小可在Config.py中设置，这里设置为4核*8 &#x3D;32</p>
-<p><img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image050.png" alt="文本  描述已自动生成"></p>
-<p>爬取100条数据并同步写入csv的用时为41.646127 秒<img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image052.png" alt="img"></p>
-<p>我们可以看到爬取300条数据并同步写入csv的用时为133.6秒<img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image054.png" alt="手机屏幕的截图  描述已自动生成"></p>
-<p>当任务数&gt;32时 随着数据量的增加，线程池开销成倍增加。</p>
-<p>线程池内部是通过一个工作队列去维护任务的执行的。这将任务和线程分离，给了线程池优化线程数量的空间，解决了资源分配的问题，这些可以使应用程序和服务器应用响应更快。使用线程池是一个看似很不错的解决方案，但是它却有一个根本性的缺陷：连续争用问题。也就是多个线程在申请任务时，为了合理地分配任务要付出锁资源，对比快速的任务执行来说，这部分申请的损耗是巨大的。</p>
-<p>Version.2 单线程+异步协程</p>
-<p>asyncio是Python3.4版本引入的标准库，asyncio 往往是构建 IO 密集型的最佳选择。asyncio 提供一组 高层级 API 用于:</p>
-<p>并发地 运行 Python 协程 并对其执行过程实现完全控制;</p>
-<p>执行 网络 IO 和 IPC;</p>
-<p>通过 队列 实现分布式任务; <img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image056.png" alt="img"></p>
-<p>同步 并发代码;</p>
-<p>爬取300条数据并同步写入csv的用时为55.25秒，使用主动出让的程序调度方式使得效率提升了接近100%</p>
-<p><img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image058.png" alt="图形用户界面, 文本  描述已自动生成"></p>
-<p>接下来可再设置一个交互界面 供用户选择获取基金详细信息的方式<img src="file:///C:/Users/Stan/AppData/Local/Temp/msohtmlclip1/01/clip_image060.png" alt="img"></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>实现了3大功能：爬取基金的近1、3、6月，近1、3年及成立来的收益率，前基金经理及其任职时间、任职来的收益率及总的任职时间；任意基金的收益趋势图；在爬虫中使用异步实现高性能的数据爬取操作。</p>
-<p>待发展功能：本地数据的索引排序，使用GEVENT框架的协程使用。</p>
+                <p>在现代计算机系统中，I&#x2F;O 操作是影响性能的关键因素，尤其是在网络服务和本地存储密集型应用中。你是否曾经思考过网络 I&#x2F;O 和本地 I&#x2F;O 之间的性能差异？为什么网络传输总是比本地硬盘慢？在现代高性能网络编程中，epoll 凭借其卓越的 I&#x2F;O 多路复用能力，成为了 Linux 环境下处理大规模并发连接的核心工具。那么，epoll 到底为什么如此高效？它如何超越传统的 select() 和 poll()？通过这篇讨论，你将深入了解为什么 epoll 是大规模网络 I&#x2F;O 管理的首选，以及如何在实践中最大化其优势。</p>
+<p>在操作系统中，程序运行的空间分为内核空间和用户空间， 用户空间所有对io操作的代码（如文件的读写、socket的收发等）都会通过系统调用进入内核空间完成实际的操作。</p>
+<h2 id="阻塞-I-x2F-O"><a href="#阻塞-I-x2F-O" class="headerlink" title="阻塞 I&#x2F;O"></a>阻塞 I&#x2F;O</h2><p>在阻塞 I&#x2F;O 模式下，系统调用（如 read() 或 recvfrom()）会一直等待，直到内核把数据准备好并传输到用户空间。此期间，线程会被挂起，CPU将被释放去做其他事情，但这个线程无法执行任何其他任务，直到 I&#x2F;O 操作完成。这种情况会导致线程阻塞，尤其在高并发环境下，每个 I&#x2F;O 操作都可能耗费大量时间等待。在linux中，默认情况下所有的socket都是阻塞的，一个典型的读操作流程大概是这样：<img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@main/source/_posts/IOandEpoll/image-1.png" alt="socket"></p>
+<p>socket_io001<br>当用户进程调用了 read()&#x2F;recvfrom() 等系统调用函数，它会进入内核空间中，当这个网络I&#x2F;O没有数据的时候，内核就要等待数据的到来，而在用户进程这边，整个进程会被阻塞，直到内核空间返回数据。当内核空间的数据准备好了，它就会将数据从内核空间中拷贝到用户空间，此时用户进程才解除阻塞的的状态，重新运行起来。<br>所以，阻塞I&#x2F;O的特点就是在IO执行的两个阶段（用户空间与内核空间）都被阻塞了。</p>
+<h2 id="非阻塞-I-x2F-O"><a href="#非阻塞-I-x2F-O" class="headerlink" title="非阻塞 I&#x2F;O"></a>非阻塞 I&#x2F;O</h2><p>非阻塞 I&#x2F;O 则允许程序发起 I&#x2F;O 操作（例如 read() 或 recvfrom()），即使数据还没准备好，内核也不会让进程挂起，而是立即返回。此时用户进程得到的是一个错误，提示数据尚未准备好。用户进程需要不断轮询，重复调用 I&#x2F;O 操作直到数据可用。这种方式避免了线程被阻塞的情况，但频繁的轮询可能会导致 CPU 使用效率低下。<img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@main/source/_posts/IOandEpoll/image-2.png" alt="alt text"><br>多路复用 I&#x2F;O<br>多路复用 I&#x2F;O (select()，poll()，epoll()) 允许单个线程监控多个文件描述符（如 socket），从而在多个 I&#x2F;O 操作之间进行复用。它的基本原理是通过轮询多个 socket，查看是否有数据到达，并在有数据到达时通知应用程序。相比非阻塞 I&#x2F;O，这种机制更高效，特别适合于处理大量连接的服务器。<br>本地 I&#x2F;O 操作通常为阻塞模式，即在进行 I&#x2F;O 操作时，进程会被挂起直到操作完成。然而，现代操作系统也提供了非阻塞本地 I&#x2F;O 或异步 I&#x2F;O（如 Linux 的 aio 或 Windows 的 IOCP），允许应用程序继续执行其他任务而不等待 I&#x2F;O 完成。网络 I&#x2F;O 同样可以是阻塞的或非阻塞的。在非阻塞网络 I&#x2F;O 中，进程发起 I&#x2F;O 操作时不需要等待数据返回，可以继续执行其他操作。网络 I&#x2F;O 领域中，异步 I&#x2F;O、多路复用 I&#x2F;O（如 select()、poll()、epoll()）、以及事件驱动编程（如 libuv、libevent）等技术被广泛使用，以应对高延迟和并发问题。</p>
+<p>.select()<br>用法：允许监视多个文件描述符，以查看它们是否已准备好读取、写入或是否有错误。<br>限制：<br>具有可监控的最大文件描述符数量（通常为 1024）。此数量由 定义FD_SETSIZE，在高并发应用程序中可能会受到限制。<br>当有大量文件描述符时效率低下，因为它每次都必须检查每个描述符。<br>使用单一数据结构来保存读取、写入和错误描述符。</p>
+<p>例子：<br>fd_set readfds; FD_ZERO(&amp;readfds); FD_SET(socket_fd, &amp;readfds); select(socket_fd + 1, &amp;readfds, NULL, NULL, &amp;timeout);<br>2.poll()<br>用途select()：对文件描述符数量没有限制的改进。<br>好处：<br>struct pollfd使用比 使用的位掩码更具可扩展性的数组select()。<br>可以更轻松地处理大量文件描述符。<br>缺点：<br>由于每次调用时都需要轮询列表中的每个文件描述符，因此仍然效率低下。<br>例子：<br>struct pollfd fds[2]; fds[0].fd &#x3D; socket_fd; fds[0].events &#x3D; POLLIN; poll(fds, 2, timeout); </p>
+<h2 id="3-epoll-（Linux-专用）"><a href="#3-epoll-（Linux-专用）" class="headerlink" title="3. epoll()（Linux 专用）"></a>3. epoll()（Linux 专用）</h2><p>用途：专为高性能应用程序（例如，处理数千个文件描述符）设计的更具可扩展性和更高效的机制。<br>好处：<br>因为它使用基于事件的模型，所以poll()效率更高。select()<br>内核仅返回已就绪的文件描述符，而不是轮询每个文件描述符。<br>允许边缘触发和电平触发模式，提供灵活性。<br>epoll()效率更高，因为它会内部跟踪文件描述符集，并且只在某个文件描述符就绪时通知应用程序。它不需要在每次调用时重新检查所有文件描述符。那为什么epoll可以高效处理数千个连接，达到更好的并发性能？<br>高效的事件通知机制<br>select()和poll()：</p>
+<p>这两个函数每次调用时都会对所有文件描述符执行线性扫描。这意味着即使只有少数文件描述符“就绪”（即数据可供读取&#x2F;写入），内核也必须在每次调用该函数时检查每个描述符。这使得它们的性能与受监视的文件描述符数量成正比。<br>例如，如果您正在监视 1,000 个文件描述符，但只有 1 个已准备就绪，select()则poll()仍将对所有 1,000 个进行迭代。</p>
+<p>epoll()：</p>
+<p>epoll它的工作原理是只向内核注册一次文件描述符（使用epoll_ctl()）。此后，内核会跟踪哪些文件描述符已就绪。当您调用时epoll_wait()，它仅返回具有事件（即数据就绪）的文件描述符，而不会扫描所有文件描述符。这使得它更加高效，尤其是在监视大量描述符时，因为它消除了重复扫描的需要。<br>它不再在每次调用时检查所有文件描述符，epoll而是更像一个“事件驱动”系统：当注册描述符的状态发生变化时，内核会通知您。</p>
+<p>2.边沿触发和电平触发模式<br>epoll()提供两种模式：LT（level trigger）和ET（edge trigger）。<br>边缘触发：当文件描述符的状态发生变化时（例如，当数据可用时），应用程序只会收到一次通知。然后应用程序负责读取&#x2F;写入所有可用数据。这最大限度地减少了系统调用，因为应用程序不需要不断轮询内核。<br>水平触发：行为更像poll()或select()；只要文件描述符保持就绪状态，它就会不断通知应用程序。这提供了灵活性，但边缘触发模式可以显著减少高性能应用程序中的开销。<br>3.大量描述符的 O(1) 性能<br>select()和poll()：<br>两者都具有O(n)复杂度，其中n是被监视的文件描述符的数量。随着描述符数量的增加，检查它们所花费的时间也呈线性增长。<br>epoll()：<br>epoll_wait()对于大多数操作来说，其复杂度为O(1)，这意味着它的性能不会随着文件描述符数量的增加而降低。这使得它在处理数千（甚至数万）个连接时具有更好的扩展性。<br>4.内核空间数据结构<br>epoll()使用更先进的内核空间数据结构（如红黑树和链接列表）来高效跟踪文件描述符。一旦文件描述符被注册，它就会存储在树中，从而允许快速查找和更新，进一步提高性能。<br>相比之下，每次调用时select()都poll()需要将所有文件描述符从用户空间复制到内核空间，并且内核必须检查每一个文件描述符，从而导致更多的开销。<br>5.大量描述符的内存使用率较低<br>在 中select()，您必须提供一个固定大小的位掩码（通常限制为 1024 个描述符，但在某些系统中可以进行调整）。<br>在中poll()，您传递一个数组struct pollfd，该数组随着描述符的数量线性增长。<br>epoll()通过仅维护活动文件描述符（具有事件的文件描述符）列表而不是所有描述符的完整集合来最大限度地减少内存使用量。<br>下面是epoll性能检测的一段代码示例：</p>
+<p>#include &lt;stdio.h&gt;<br>#include &lt;sys&#x2F;epoll.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;fcntl.h&gt;</p>
+<p>int main() {<br>    int fd1 &#x3D; open(“file1.txt”, O_RDONLY);<br>    int fd2 &#x3D; open(“file2.txt”, O_RDONLY);</p>
+<pre><code>if (fd1 &lt; 0 || fd2 &lt; 0) &#123;
+    perror(&quot;open failed&quot;);
+    return -1;
+&#125;
+
+// Create an epoll instance
+int epoll_fd = epoll_create1(0);
+if (epoll_fd &lt; 0) &#123;
+    perror(&quot;epoll_create1 failed&quot;);
+    return -1;
+&#125;
+
+// Add fd1 and fd2 to the epoll instance
+struct epoll_event event;
+event.events = EPOLLIN;  // We are interested in read events
+
+event.data.fd = fd1;
+if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fd1, &amp;event) &lt; 0) &#123;
+    perror(&quot;epoll_ctl failed for fd1&quot;);
+    return -1;
+&#125;
+
+event.data.fd = fd2;
+if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fd2, &amp;event) &lt; 0) &#123;
+    perror(&quot;epoll_ctl failed for fd2&quot;);
+    return -1;
+&#125;
+
+struct epoll_event events[2];
+
+while (1) &#123;
+    // Wait for events on the file descriptors
+    int num_events = epoll_wait(epoll_fd, events, 2, -1);
+
+    if (num_events &lt; 0) &#123;
+        perror(&quot;epoll_wait failed&quot;);
+        break;
+    &#125;
+
+    // Handle the events that are ready
+    for (int i = 0; i &lt; num_events; i++) &#123;
+        if (events[i].data.fd == fd1) &#123;
+            printf(&quot;Data ready on fd1\n&quot;);
+        &#125; else if (events[i].data.fd == fd2) &#123;
+            printf(&quot;Data ready on fd2\n&quot;);
+        &#125;
+    &#125;
+&#125;
+
+close(fd1);
+close(fd2);
+close(epoll_fd);
+return 0;
+</code></pre>
+<p>}</p>
+<p>epoll()速度更快，主要是因为它避免了重复扫描所有文件描述符，而是使用事件驱动模型，仅在必要时通知应用程序。对于大多数操作，它的性能为 O(1)，并且可以高效处理数千个连接，使其成为大型 Web 服务器等高并发场景的理想选择。相比之下，select()和poll()两者都具有 O(n) 性能，随着文件描述符数量的增加，这会导致速度明显变慢。</p>
 
                 
             </div>
@@ -565,7 +576,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://stan370.github.io/CrawlFund%E6%80%BB%E7%BB%93%E6%8A%A5%E5%91%8A.html">https://stan370.github.io/CrawlFund%E6%80%BB%E7%BB%93%E6%8A%A5%E5%91%8A.html</a>
+                    <a href="https://stan370.github.io/2024/09/15/IOandEpoll/Epoll/">https://stan370.github.io/2024/09/15/IOandEpoll/Epoll/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -602,17 +613,25 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">No tag</span>
+                            
+                                <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">
+                                    <span class="chip bg-color">计算机基础</span>
+                                </a>
+                            
+                                <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">
+                                    <span class="chip bg-color">操作系统</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
                 <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
-                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/share/css/share.min.css">
 <div id="article-share">
 
     
     <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
-    <script src="/libs/share/js/social-share.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/share/js/social-share.min.js"></script>
     
 
     
@@ -726,14 +745,15 @@
             <div class="reward-content">
                 <div class="reward-tabs">
                     <ul class="tabs row">
-                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
                         <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
                     </ul>
-                    <div id="alipay">
-                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
-                    </div>
+                    
                     <div id="wechat">
-                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/medias/reward/wechat.JPG" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                    <div id="alipay">
+                        TBD
                     </div>
                 </div>
             </div>
@@ -774,18 +794,16 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;Current
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/CrawlFund%E6%80%BB%E7%BB%93%E6%8A%A5%E5%91%8A.html">
+                <a href="/2024/09/17/Linux0/">
                     <div class="card-image">
                         
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@main/themes/hexo-theme-matery/source/medias/featureimages/fk.png" class="responsive-img" alt="如何认识操作系统">
                         
-                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="">
-                        
-                        <span class="card-title"></span>
+                        <span class="card-title">如何认识操作系统</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -795,18 +813,33 @@
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-12-13
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2024-09-17
+                        </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            Stan ke
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" class="post-category">
+                                    计算机科学
+                                </a>
+                            
                             
                         </span>
                     </div>
                 </div>
-
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">
+                        <span class="chip bg-color">计算机基础</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">
+                        <span class="chip bg-color">操作系统</span>
+                    </a>
+                    
+                </div>
                 
             </div>
         </div>
@@ -814,16 +847,15 @@
         
         <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge right-badge text-color">
-                Current&nbsp;<i class="far fa-dot-circle"></i>
+                Next&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/CrawlFund%E6%80%BB%E7%BB%93%E6%8A%A5%E5%91%8A.html">
+                <a href="/2024/08/20/DB/">
                     <div class="card-image">
                         
+                        <img src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io@main/themes/hexo-theme-matery/source/medias/featureimages/db.png" class="responsive-img" alt="理解数据库系统">
                         
-                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="">
-                        
-                        <span class="card-title"></span>
+                        <span class="card-title">理解数据库系统</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -834,7 +866,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-12-13
+                                <i class="far fa-clock fa-fw icon-date"></i>2024-08-20
                             </span>
                         <span class="publish-author">
                             
@@ -844,7 +876,14 @@
                         </span>
                     </div>
                 </div>
-
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">
+                        <span class="chip bg-color">数据库</span>
+                    </a>
+                    
+                </div>
                 
             </div>
         </div>
@@ -857,21 +896,21 @@
 
 
 <!-- 代码块功能依赖 -->
-<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/codeBlock/codeBlockFuction.js"></script>
 
 <!-- 代码语言 -->
 
-<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/codeBlock/codeLang.js"></script>
 
 
 <!-- 代码块复制 -->
 
-<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/codeBlock/codeCopy.js"></script>
 
 
 <!-- 代码块收缩 -->
 
-<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/codeBlock/codeShrink.js"></script>
 
 
     </div>
@@ -892,7 +931,7 @@
 </div>
 
 
-<script src="/libs/tocbot/tocbot.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/tocbot/tocbot.min.js"></script>
 <script>
     $(function () {
         tocbot.init({
@@ -1075,30 +1114,32 @@ $(function () {
 </div>
 
 
-    <script src="/libs/materialize/materialize.min.js"></script>
-    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
-    <script src="/libs/aos/aos.js"></script>
-    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
-    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
-    <script src="/js/matery.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/js/matery.js"></script>
 
-    
-
-    
-
-    <!-- 雪花特效 -->
-    
-
-    <!-- 鼠标星星特效 -->
     
 
      
         <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
-        <script src="/libs/others/TencentCaptcha.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/others/TencentCaptcha.js"></script>
         <button id="TencentCaptcha" data-appid="xxxxxxxxxx" data-cbfn="callback" type="button" hidden></button>
     
 
     <!-- Baidu Analytics -->
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
 
     <!-- Baidu Push -->
 
@@ -1116,19 +1157,8 @@ $(function () {
     })();
 </script>
 
-    
-    <script src="/libs/others/clicklove.js" async="async"></script>
-    
-    
-    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
-    
-
-    
-
-    
-
-    <!--腾讯兔小巢-->
-    
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/others/clicklove.js" async="async"></script>
+    <script async src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/"></script>
     
 
     
@@ -1136,7 +1166,11 @@ $(function () {
     
 
     
-    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+
+    
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/Stan370/stan370.github.io/libs/instantpage/instantpage.js" type="module"></script>
     
 
 </body>
